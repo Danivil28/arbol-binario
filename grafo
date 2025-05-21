@@ -1,0 +1,51 @@
+
+<?php
+
+class grafo{
+
+    public $vertices;
+    public $aristas;
+   
+    public function __construct(){
+        $this->vertices=array();
+        $this->aristas=array();
+    }
+
+    public function agregarvertices($vertice){
+        $this->vertices[]=$vertice;
+        $this->aristas[$vertice]=array();
+    }
+   
+    public function agregararistas($vertice1, $vertice2){
+      $this->aristas[$vertice1][]=$vertice2;
+      $this->aristas[$vertice2][]=$vertice1;
+    }
+   
+    public function imprimirgrafo(){
+      foreach($this->vertices as $vertice){
+        echo $vertice."->";
+       
+        foreach($this->aristas [$vertice]as $item){
+        echo $item."->";
+      }
+   
+    echo "\n";
+    }
+    }
+}
+      $migrafo = new grafo();
+     
+      $migrafo->agregarvertices("a");
+      $migrafo->agregarvertices("b");
+      $migrafo->agregarvertices("c");
+      $migrafo->agregarvertices("d");
+     
+      $migrafo->agregararistas("a","b");
+      $migrafo->agregararistas("b","c");
+      $migrafo->agregararistas("c","a");
+      $migrafo->agregararistas("b","d");
+     
+   echo"el grafo creado es:\n";
+   $migrafo->imprimirgrafo();
+
+?>
