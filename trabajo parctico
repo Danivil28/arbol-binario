@@ -1,0 +1,302 @@
+<?php
+
+// 1. ARREGLO – LÍNEAS DE TRANSPORTE
+echo "=============================\n";
+echo "1. Registro de líneas de transporte\n";
+echo "=============================\n";
+
+$lineasTransporte = [
+    "Línea 1" => [["nombre" => "Carlos Lopez", "cedula" => "1012345678", "bus" => "Bus 1"]],
+    "Línea 2" => [["nombre" => "Pedro Sanchez", "cedula" => "1023456789", "bus" => "Bus 2"]],
+    "Línea 3" => [["nombre" => "Elena Ramirez", "cedula" => "1034567890", "bus" => "Bus 3"]],
+];
+
+print_r($lineasTransporte);
+
+
+// 2. LISTA ENLAZADA – PUEBLOS VISITADOS
+echo "\n=============================\n";
+echo "2. Lista enlazada de pueblos\n";
+echo "=============================\n";
+
+class Nodo {
+    public $pueblo;
+    public $siguiente;
+
+    public function __construct($pueblo) {
+        $this->pueblo = $pueblo;
+        $this->siguiente = null;
+    }
+}
+
+class ListaEnlazada {
+    private $cabeza;
+
+    public function agregarPueblo($pueblo) {
+        $nuevoNodo = new Nodo($pueblo);
+        if ($this->cabeza === null) {
+            $this->cabeza = $nuevoNodo;
+        } else {
+            $actual = $this->cabeza;
+            while ($actual->siguiente !== null) {
+                $actual = $actual->siguiente;
+            }
+            $actual->siguiente = $nuevoNodo;
+        }
+    }
+
+    public function eliminarPueblo($pueblo) {
+        if ($this->cabeza === null) {
+            echo "La lista está vacía.\n";
+            return;
+        }
+
+        if ($this->cabeza->pueblo === $pueblo) {
+            $this->cabeza = $this->cabeza->siguiente;
+            echo "Pueblo '$pueblo' eliminado.\n";
+            return;
+        }
+
+        $actual = $this->cabeza;
+        while ($actual->siguiente !== null && $actual->siguiente->pueblo !== $pueblo) {
+            $actual = $actual->siguiente;
+        }
+
+        if ($actual->siguiente !== null) {
+            $actual->siguiente = $actual->siguiente->siguiente;
+            echo "Pueblo '$pueblo' eliminado.\n";
+        } else {
+            echo "Pueblo '$pueblo' no encontrado.\n";
+        }
+    }
+
+    public function buscarPueblo($pueblo) {
+        $actual = $this->cabeza;
+        while ($actual !== null) {
+            if ($actual->pueblo === $pueblo) {
+                echo "Pueblo '$pueblo' encontrado.\n";
+                return true;
+            }
+            $actual = $actual->siguiente;
+        }
+        echo "Pueblo '$pueblo' no encontrado.\n";
+        return false;
+    }
+
+    public function mostrarPueblos() {
+        if ($this->cabeza === null) {
+            echo "La lista está vacía.\n";
+            return;
+        }
+
+        $actual = $this->cabeza;
+        echo "Pueblos: ";
+        while ($actual !== null) {
+            echo $actual->pueblo;
+            if ($actual->siguiente !== null) {
+                echo " -> ";
+            }
+            $actual = $actual->siguiente;
+        }
+        echo "\n";
+    }
+}
+
+$lista = new ListaEnlazada();
+$lista->agregarPueblo("Cajicá");
+$lista->agregarPueblo("Zipaquirá");
+$lista->agregarPueblo("Pacho");
+$lista->mostrarPueblos();
+$lista->buscarPueblo("Cajicá");
+$lista->eliminarPueblo("Cajicá");
+$lista->mostrarPueblos();
+$lista->eliminarPueblo("Tunja");
+
+
+// 3. PILA – RECORRIDO DEL PASAJERO
+echo "\n=============================\n";
+echo "3. Recorrido del pasajero (Pila)\n";
+echo "=============================\n";
+
+class Pila {
+    private $elementos = [];
+
+    public function push($valor) {
+        array_push($this->elementos, $valor);
+    }
+
+    public function pop() {
+        return array_pop($this->elementos);
+    }
+
+    public function mostrarOrdenInverso() {
+        return array_reverse($this->elementos);
+    }
+
+    public function mostrarOrdenLlegada() {
+        return $this->elementos;
+    }
+}
+
+$pila = new Pila();
+$pila->push("Bogotá");
+$pila->push("Tunja");
+$pila->push("Cajicá");
+$pila->push("Zipaquirá");
+$pila->push("Pacho");
+
+echo "Orden de llegada:\n";
+foreach ($pila->mostrarOrdenLlegada() as $pueblo) {
+    echo "- $pueblo\n";
+}
+
+echo "Orden inverso (último a primero):\n";
+foreach ($pila->mostrarOrdenInverso() as $pueblo) {
+    echo "- $pueblo\n";
+}
+
+
+// 4. COLA – ESPERA DE PASAJEROS
+echo "\n=============================\n";
+echo "4. Fila de espera (Cola)\n";
+echo "=============================\n";
+
+class Cola {
+    private $elementos = [];
+
+    public function enqueue($pasajero) {
+        array_push($this->elementos, $pasajero);
+    }
+
+    public function dequeue() {
+        return array_shift($this->elementos);
+    }
+
+    public function mostrar() {
+        if (empty($this->elementos)) {
+            echo "No hay pasajeros en la fila.\n";
+        } else {
+            echo "Pasajeros en fila:\n";
+            foreach ($this->elementos as $p) {
+                echo "- $p\n";
+            }
+        }
+    }
+}
+
+$cola = new Cola();
+$cola->enqueue("Ricardo");
+$cola->enqueue("Isabella");
+$cola->enqueue("Mariana");
+$cola->mostrar();
+echo "\nAborda: " . $cola->dequeue() . "\n";
+$cola->mostrar();
+$cola->dequeue();
+$cola->mostrar();
+$cola->dequeue();
+$cola->mostrar();
+
+
+// 5. ÁRBOL – RUTAS RECOMENDADAS
+echo "\n=============================\n";
+echo "5. Rutas recomendadas (Árbol)\n";
+echo "=============================\n";
+
+class NodoRuta {
+    public $pueblo, $tiempo, $pasajeros, $izquierda, $derecha;
+
+    public function __construct($pueblo, $tiempo, $pasajeros) {
+        $this->pueblo = $pueblo;
+        $this->tiempo = $tiempo;
+        $this->pasajeros = $pasajeros;
+        $this->izquierda = $this->derecha = null;
+    }
+}
+
+class ArbolViaje {
+    private $raiz = null;
+
+    public function insertar($pueblo, $tiempo, $pasajeros) {
+        $this->raiz = $this->insertarRec($this->raiz, $pueblo, $tiempo, $pasajeros);
+    }
+
+    private function insertarRec($nodo, $pueblo, $tiempo, $pasajeros) {
+        if ($nodo === null) return new NodoRuta($pueblo, $tiempo, $pasajeros);
+        if ($pueblo < $nodo->pueblo) {
+            $nodo->izquierda = $this->insertarRec($nodo->izquierda, $pueblo, $tiempo, $pasajeros);
+        } elseif ($pueblo > $nodo->pueblo) {
+            $nodo->derecha = $this->insertarRec($nodo->derecha, $pueblo, $tiempo, $pasajeros);
+        }
+        return $nodo;
+    }
+
+    public function inOrden() {
+        $this->inOrdenRec($this->raiz);
+    }
+
+    private function inOrdenRec($nodo) {
+        if ($nodo !== null) {
+            $this->inOrdenRec($nodo->izquierda);
+            echo "Pueblo: {$nodo->pueblo}, Tiempo: {$nodo->tiempo} min, Pasajeros: {$nodo->pasajeros}\n";
+            $this->inOrdenRec($nodo->derecha);
+        }
+    }
+}
+
+$arbol = new ArbolViaje();
+$arbol->insertar("Bogotá", 0, 20);
+$arbol->insertar("Tunja", 120, 15);
+$arbol->insertar("Cajicá", 45, 25);
+$arbol->insertar("Zipaquirá", 60, 18);
+$arbol->insertar("Pacho", 90, 12);
+$arbol->inOrden();
+
+
+// 6. GRAFO – RED DE CONEXIONES
+echo "\n=============================\n";
+echo "6. Red de pueblos conectados (Grafo)\n";
+echo "=============================\n";
+
+class Grafo {
+    private $adyacencia = [], $tiempos = [], $pasajeros = [];
+
+    public function agregarPueblo($nombre) {
+        if (!isset($this->adyacencia[$nombre])) {
+            $this->adyacencia[$nombre] = [];
+        }
+    }
+
+    public function conectarPueblos($origen, $destino, $tiempo, $pasajeros) {
+        if (!isset($this->adyacencia[$origen]) || !isset($this->adyacencia[$destino])) {
+            echo "Uno de los pueblos no existe.\n";
+            return;
+        }
+        $this->adyacencia[$origen][] = $destino;
+        $this->adyacencia[$destino][] = $origen;
+        $this->tiempos["$origen-$destino"] = $tiempo;
+        $this->tiempos["$destino-$origen"] = $tiempo;
+        $this->pasajeros["$origen-$destino"] = $pasajeros;
+        $this->pasajeros["$destino-$origen"] = $pasajeros;
+    }
+
+    public function mostrarRed() {
+        foreach ($this->adyacencia as $pueblo => $conexiones) {
+            echo "Pueblo $pueblo conectado con:\n";
+            foreach ($conexiones as $dest) {
+                $key = "$pueblo-$dest";
+                echo " → $dest (Tiempo: {$this->tiempos[$key]} min, Pasajeros: {$this->pasajeros[$key]})\n";
+            }
+        }
+    }
+}
+
+$grafo = new Grafo();
+$pueblos = ["Bogotá", "Cajicá", "Zipaquirá", "Pacho", "Tunja"];
+foreach ($pueblos as $p) $grafo->agregarPueblo($p);
+$grafo->conectarPueblos("Bogotá", "Cajicá", 45, 25);
+$grafo->conectarPueblos("Cajicá", "Zipaquirá", 15, 20);
+$grafo->conectarPueblos("Zipaquirá", "Pacho", 30, 12);
+$grafo->conectarPueblos("Pacho", "Tunja", 60, 10);
+$grafo->mostrarRed();
+
+?>
